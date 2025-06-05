@@ -1,20 +1,150 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>Tıkla və Xal Qazan</title>
+  <meta charset="UTF-8" />
+  <title>Tıkladıqca Xal Qazan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(120deg, #a8edea, #fed6e3);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: center;
+      position: relative;
+    }
+    #highScore {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      background: rgba(0,0,0,0.1);
+      padding: 8px 15px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: #0d47a1;
+      box-shadow: 1px 1px 6px rgba(0,0,0,0.15);
+      user-select: none;
+      z-index: 10;
+    }
+    h1 {
+      margin-bottom: 5px;
+      color: #2e7d32;
+      text-shadow: 1px 1px 2px #222;
+    }
+    #timer {
+      font-size: 32px;
+      color: #b71c1c;
+      margin-bottom: 20px;
+    }
+    #counter {
+      font-size: 72px;
+      color: #2e7d32;
+      font-weight: 700;
+      text-shadow: 1px 1px 3px #444;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 28px;
+      padding: 15px 40px;
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(106,27,154,0.6);
+      transition: background-color 0.25s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #4a148c;
+    }
+    button:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 28px;
+      color: #0d47a1;
+      font-weight: 600;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h2>Click və Xal Qazan</h2>
-  <p>Xal: <span id="score">0</span></p>
-  <button onclick="score()">Tıkla!</button>
+
+  <div id="highScore">Ən yüksək xal: 0</div>
+  <h1>Tıkladıqca Xal Qazan!</h1>
+  <div id="timer">Vaxt: 10 saniyə</div>
+  <div id="counter">0</div>
+  <button id="clickBtn">Kliklə məni!</button>
+  <div id="result"></div>
+
+  <audio id="clickSound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
 
   <script>
-    let xal = 0;
-    function score() {
-      xal++;
-      document.getElementById("score").innerText = xal;
+    const counter = document.getElementById('counter');
+    const clickBtn = document.getElementById('clickBtn');
+    const timer = document.getElementById('timer');
+    const result = document.getElementById('result');
+    const highScoreDisplay = document.getElementById('highScore');
+    const clickSound = document.getElementById('clickSound');
+
+    let count = 0;
+    let timeLeft = 10;
+    let gameActive = true;
+    let highScore = 0;
+    let countdown;
+
+    function startGame() {
+      count = 0;
+      timeLeft = 10;
+      gameActive = true;
+      counter.textContent = count;
+      timer.textContent = `Vaxt: ${timeLeft} saniyə`;
+      result.style.display = 'none';
+      clickBtn.textContent = 'Kliklə məni!';
+      clearInterval(countdown);
+      
+      countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          gameActive = false;
+          clickBtn.disabled = false;
+          timer.textContent = 'Vaxt bitdi!';
+          result.style.display = 'block';
+          result.textContent = `Təbriklər, toplam ${count} xal qazandın! 🎉`;
+          
+          if (count > highScore) {
+            highScore = count;
+            highScoreDisplay.textContent = `Ən yüksək xal: ${highScore}`;
+          }
+          clickBtn.textContent = 'Yenidən Başla';
+        } else {
+          timer.textContent = `Vaxt: ${timeLeft} saniyə`;
+          timeLeft--;
+        }
+      }, 1000);
     }
+
+    clickBtn.addEventListener('click', () => {
+      if (gameActive) {
+        count++;
+        counter.textContent = count;
+        clickSound.currentTime = 0;
+        clickSound.play();
+      } else {
+        startGame();
+      }
+    });
+
+    startGame();
   </script>
+
 </body>
 </html>
