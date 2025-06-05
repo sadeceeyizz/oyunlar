@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <title>Tıkla və Xal Qazan</title>
+</head>
+<body>
+  <h2>Click və Xal Qazan</h2>
+  <p>Xal: <span id="score">0</span></p>
+  <button onclick="score()">Tıkla!</button>
+
+  <script>
+    let xal = 0;
+    function score() {
+      xal++;
+      document.getElementById("score").innerText = xal;
+    }
+  </script>
+</body>
+</html>
